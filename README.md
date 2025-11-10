@@ -23,6 +23,6 @@ It provides functionality for handling users, processing payments, and maintaini
    cd playment_system
 
 ## Run command
-    bash
+    
     go run main.go
 
