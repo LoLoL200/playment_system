@@ -56,16 +56,19 @@ func (p PaymentBase) Processing() bool {
 
 // Func for information output
 func inputInfo(p PaymentBase) {
-
+	fmt.Println("------------------------------")
 	fmt.Printf("Ведіть вашу сумму на балансі:")
 	fmt.Scanln(&p.Balance)
+	fmt.Println("------------------------------")
 	fmt.Printf("Обробляємо платіж на суму %.2f грн...\n", p.Balance)
+	fmt.Println("==================================")
 	fmt.Printf("💳 %s\n", p.Name)
 	fmt.Printf("%t\n", p.Processing())
 	fmt.Printf("💰 Сума: %.2f грн\n", p.Balance)
 	fmt.Printf("💸 Комісія: %.2f грн (%.2f%%)\n", p.Commissions(), p.FeePercent)
 	fmt.Printf("📊 До списання: %.2f грн\n", p.Debited())
 	fmt.Println("Дякуємо за покупку!")
+	fmt.Println("==================================")
 }
 
 // Func Playment system
@@ -74,9 +77,11 @@ func systemPlayment() {
 	isAktive = true
 	for {
 		if isAktive == true {
-			fmt.Println("=== Система платежів ===")
-			fmt.Printf("Доступні методи оплати:\n1. Кредитна картка\n2. PayPal\n3. Готівка\n4. Банківський переказ\n5.Вихід\n")
+			fmt.Println("========== Система платежів =============")
+			fmt.Printf("Доступні методи оплати:\n1. Кредитна картка\n2. PayPal\n3. Готівка\n4. Банківський переказ\n5. Вихід\n")
+			fmt.Println("==================================")
 			inputNumber := getIntInput("Оберіть метод оплати (1-5): ")
+			fmt.Println("==================================")
 			switch inputNumber {
 			case 1:
 				kreditCard := KreditCard{PaymentBase{"Кередитна картка", 0, 1.5}}
@@ -91,6 +96,7 @@ func systemPlayment() {
 				bankTransfer := KreditCard{PaymentBase{"Банківський переказ", 0, 2.0}}
 				inputInfo(bankTransfer.PaymentBase)
 			case 5:
+				fmt.Println("Допобачення!!!")
 				os.Exit(0)
 			default:
 				fmt.Println("Ведіть лише чифри від 1-5, спробуйте ще раз")
