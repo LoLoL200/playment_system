@@ -14,44 +14,45 @@ func getIntInput(promt string) int {
 }
 
 // Interfice playment
-type Playment interface {
-	Commissions() float64
-	Debited() float64
-	Processing() bool
+type Payment interface {
+	Commission() float64
+	Total() float64
+	Validate() bool
 	GetName() string
 	GetBalance() float64
 	SetBalance(float64)
 	GetFeePercent() float64
 }
-type PlaymentBase struct {
+
+type paymentBase struct {
 	Name       string
 	Balance    float64
 	FeePercent float64
 }
 
-func (p *PlaymentBase) GetName() string        { return p.Name }
-func (p *PlaymentBase) GetBalance() float64    { return p.Balance }
-func (p *PlaymentBase) SetBalance(b float64)   { p.Balance = b }
-func (p *PlaymentBase) GetFeePercent() float64 { return p.FeePercent }
+func (p *paymentBase) GetName() string        { return p.Name }
+func (p *paymentBase) GetBalance() float64    { return p.Balance }
+func (p *paymentBase) SetBalance(b float64)   { p.Balance = b }
+func (p *paymentBase) GetFeePercent() float64 { return p.FeePercent }
 
 // Structur
-type KreditCard struct{ PlaymentBase }
-type PayPal struct{ PlaymentBase }
-type Cach struct{ PlaymentBase }
-type BankTransfer struct{ PlaymentBase }
+type KreditCard struct{ paymentBase }
+type PayPal struct{ paymentBase }
+type Cach struct{ paymentBase }
+type BankTransfer struct{ paymentBase }
 
 // Func for commission accounts
-func (p *PlaymentBase) Commissions() float64 {
+func (p *paymentBase) Commission() float64 {
 	return p.Balance * p.FeePercent / 100
 }
 
 // Func for payments with commissions
-func (p *PlaymentBase) Debited() float64 {
-	return p.Balance + p.Commissions()
+func (p *paymentBase) Total() float64 {
+	return p.Balance + p.Commission()
 }
 
 // Func for verification of funds
-func (p *PlaymentBase) Processing() bool {
+func (p *paymentBase) Validate() bool {
 	if p.Balance >= 10.00 && p.Balance <= 50000.00 {
 		fmt.Println("✅ Платіж успішно оброблено!")
 		return true
@@ -63,7 +64,7 @@ func (p *PlaymentBase) Processing() bool {
 }
 
 // Func for information output
-func inputInfo(p Playment) {
+func processPayment(p Payment) {
 	fmt.Println("------------------------------")
 	fmt.Printf("Ведіть вашу сумму на балансі: ")
 	var balance float64
@@ -74,10 +75,10 @@ func inputInfo(p Playment) {
 	fmt.Printf("Обробляємо платіж на суму %.2f грн...\n", p.GetBalance())
 	fmt.Println("==================================")
 	fmt.Printf("💳 %s\n", p.GetName())
-	fmt.Printf("%t\n", p.Processing())
+	fmt.Printf("%t\n", p.Validate())
 	fmt.Printf("💰 Сума: %.2f грн\n", p.GetBalance())
-	fmt.Printf("💸 Комісія: %.2f грн (%.2f%%)\n", p.Commissions(), p.GetFeePercent())
-	fmt.Printf("📊 До списання: %.2f грн\n", p.Debited())
+	fmt.Printf("💸 Комісія: %.2f грн (%.2f%%)\n", p.Commission(), p.GetFeePercent())
+	fmt.Printf("📊 До списання: %.2f грн\n", p.Total())
 	fmt.Println("Дякуємо за покупку! )))))")
 	fmt.Println("==================================")
 }
@@ -91,18 +92,18 @@ func systemPlayment() {
 			fmt.Println("========== Система платежів =============")
 			fmt.Printf("Доступні методи оплати:\n1. Кредитна картка\n2. PayPal\n3. Готівка\n4. Банківський переказ\n5. Вихід\n")
 			fmt.Println("==================================")
-			inputNumber := getIntInput("Оберіть метод оплати (1-5): ")
+			choice := getIntInput("Оберіть метод оплати (1-5): ")
 			fmt.Println("==================================")
 
-			switch inputNumber {
+			switch choice {
 			case 1:
-				inputInfo(&KreditCard{PlaymentBase{"Кредитна картка", 0, 1.5}})
+				processPayment(&KreditCard{paymentBase{"Кредитна картка", 0, 1.5}})
 			case 2:
-				inputInfo(&PayPal{PlaymentBase{"PayPal", 0, 3.5}})
+				processPayment(&PayPal{paymentBase{"PayPal", 0, 3.5}})
 			case 3:
-				inputInfo(&Cach{PlaymentBase{"Готівка", 0, 0}})
+				processPayment(&Cach{paymentBase{"Готівка", 0, 0}})
 			case 4:
-				inputInfo(&BankTransfer{PlaymentBase{"Банківський переказ", 0, 2.0}})
+				processPayment(&BankTransfer{paymentBase{"Банківський переказ", 0, 2.0}})
 			case 5:
 				fmt.Println("До побачення!")
 				return
